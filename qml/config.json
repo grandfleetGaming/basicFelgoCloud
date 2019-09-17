@@ -1,0 +1,8 @@
+{
+    "title": "TestingCloudBuilds",
+    "identifier": "com.grandfleet.wizardEVP.TestingCloudBuilds",
+    "orientation": "landscape",
+    "versioncode": 1,
+    "versionname": "1.0",
+    "stage": "test"
+}
