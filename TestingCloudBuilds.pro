@@ -61,3 +61,5 @@ macx {
 
 DISTFILES += \
     qml/Player.qml
+    qml/Ground.qml
+    qml/Pipe.qml

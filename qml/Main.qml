@@ -20,20 +20,86 @@ GameWindow {
     screenWidth: 960
     screenHeight: 640
 
-    Scene {
-        id: scene
-
-        // the "logical size" - the scene content is auto-scaled to match the GameWindow size
-        width: 480
-        height: 320
-
-        // background rectangle matching the logical scene size (= safe zone available on all devices)
-        // see here for more details on content scaling and safe zone: https://felgo.com/doc/felgo-different-screen-sizes/
-        Player {
-           id: player
-           x: 147
-           y: 167
-         }
-
+   Scene {
+    id: scene
+    property string gameState: "wait"
+    property int score: 0
+    // the "logical size" - the scene content is auto-scaled to match the GameWindow size
+    width: 320
+    height: 480
+    sceneAlignmentY: "bottom"
+    PhysicsWorld {
+      debugDrawVisible: true // set this to false to hide the physics debug overlay
+      gravity.y: scene.gameState != "wait" ? 9.81 : 0 // 9.81 would be earth-like gravity, so this one will be pretty strong
+      z: 1000 // set this high enough to draw on top of everything else
     }
+    Image {
+      id: bg
+      source: "../assets/bg.png"
+      anchors.horizontalCenter: scene.horizontalCenter
+      anchors.bottom: scene.gameWindowAnchorItem.bottom
+    }
+    Pipe {
+      id: pipe1
+      x: 400
+      y: 60+Math.random()*200
+    }
+    Pipe {
+      id: pipe2
+      x: 640
+      y: 60+Math.random()*200
+    }
+    Ground {
+      anchors.bottom: scene.bottom
+      anchors.horizontalCenter: scene.horizontalCenter
+    }
+    Player {
+      id: player
+      x: 47
+      y: 167
+    }
+    Text {
+      text: scene.score
+      color: "white"
+      anchors.horizontalCenter: scene.horizontalCenter
+      y: 30
+      font.pixelSize: 30
+    }
+    Text {
+      text: scene.gameState == "gameOver" ? "Game Over.\nPress to Restart" : ''
+      color: "white"
+      anchors.horizontalCenter: scene.horizontalCenter
+      y: 80
+      font.pixelSize: 30
+    }
+    MouseArea {
+       anchors.fill: scene.gameWindowAnchorItem
+       onPressed: {
+           if(scene.gameState == "wait") {
+              scene.startGame()
+              player.push()
+            } else if(scene.gameState == "play") {
+              player.push()
+            } else if(scene.gameState == "gameOver") {
+              scene.reset()
+            }
+       }
+    }
+    function startGame() {
+      scene.gameState = "play"
+    }
+    function stopGame() {
+      scene.gameState = "gameOver"
+    }
+    function reset() {
+      scene.gameState = "wait"
+      pipe1.x = 400
+      pipe1.y = 60+Math.random()*200
+      pipe2.x = 640
+      pipe2.y = 60+Math.random()*200
+      player.x = 47
+      player.y = 167
+      scene.score = 0
+    }
+  }
 }
